@@ -73,7 +73,9 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'chat_project.wsgi.application'
+# settings.py
 ASGI_APPLICATION = 'chat_project.asgi.application'
+
 
 # LEARN CHANNELS
 CHANNEL_LAYERS = {

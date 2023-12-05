@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 
@@ -43,3 +44,7 @@ def loginView(request):
             }
             return render(request, 'accounts/login.html', context)
     return render(request, 'accounts/login.html')
+
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect(reverse('home'))
