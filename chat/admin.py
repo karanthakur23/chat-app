@@ -3,6 +3,6 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(UserProfileModel)
-admin.site.register(ChatModel)
-admin.site.register(ChatNotification)
+admin.site.register(UserProfile)
+admin.site.register(ChatRoom)
+admin.site.register(Message)

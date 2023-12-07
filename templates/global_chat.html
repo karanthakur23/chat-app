@@ -78,7 +78,7 @@
                             </tr>
                             {% endfor %}
                             <tr>
-                                <td><a style="color: green" id="global_chat_id" href="{% url 'global' %}">Global Chats</a></td>
+                                <td><a style="color: green" id="global_chat_id" href="#">Global Chats</a></td>
                             </tr>
                             <!-- end -->
                         </tbody>
@@ -95,6 +95,7 @@
                             <tr>
                                 <td>
                                     <p class="bg-success p-2 mt-2 mr-5 shadow-sm text-white float-right rounded">
+                                        <small style="color: white">{{message.sender}}</small><br>
                                         {{message.message}}
                                     </p>
                                 </td>
@@ -107,6 +108,7 @@
                             <tr>
                                 <td>
                                     <p class="bg-primary p-2 mt-2 mr-5 shadow-sm text-white float-left rounded">
+                                        <small style="color: white">{{message.sender}}</small><br>
                                         {{message.message}}
                                     </p>
                                 </td>
@@ -166,7 +168,6 @@
 {{request.user.username|json_script:"json-message-username"}}
 {% endblock %}
 {% block javascript %}
-<script src="{% static 'js/chat.js' %}"></script>
-{# <script src="{% static 'js/global_chat.js' %}"></script>#}
-{# <script src="{% static 'js/notify.js' %}"></script> #}
+<script src="{% static 'js/global_chat.js' %}"></script>
+
 {% endblock %}

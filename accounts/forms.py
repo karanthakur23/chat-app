@@ -34,3 +34,7 @@ class SignUpForm(UserCreationForm):
 
         for text in ['username', 'password1', 'password2']:
             self.fields[text].help_text = None
+
+        # def clean_email(self):
+        #     email = self.clean_email.get('email')
+        #     if get_user_model.objects.filter()

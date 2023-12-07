@@ -11,9 +11,7 @@ console.log(id, ";;;;;;;;;")
 const chatSocket = new WebSocket(
     'ws://'
     + window.location.host
-    + '/ws/'
-    + receiver1
-    + '/'
+    + '/ws/global/'
 );
 
 chatSocket.onopen = function(e) {
@@ -34,16 +32,22 @@ chatSocket.onmessage = function(e) {
         console.log("----->chat onmessage if")
         document.querySelector('#chat-body').innerHTML += `<tr>
                                                                 <td>
-                                                                <p class="bg-success p-2 mt-2 mr-5 shadow-sm text-white float-right rounded">${data.message}</p>
+                                                                    <p class="bg-success p-2 mt-2 mr-5 shadow-sm text-white float-right rounded">
+                                                                        <small style="color: white">${data.username}</small><br>
+                                                                        ${data.message}
+                                                                    </p>
                                                                 </td>
-                                                            </tr>`
-    }else{
-        console.log("------->chat onmessage else")
+                                                            </tr>`;
+    } else {
+        console.log("------->chat onmessage else");
         document.querySelector('#chat-body').innerHTML += `<tr>
                                                                 <td>
-                                                                <p class="bg-primary p-2 mt-2 mr-5 shadow-sm text-white float-left rounded">${data.message}</p>
+                                                                    <p class="bg-primary p-2 mt-2 mr-5 shadow-sm text-white float-left rounded">
+                                                                        <small style="color: white">${data.username}</small><br>
+                                                                        ${data.message}
+                                                                    </p>
                                                                 </td>
-                                                            </tr>`
+                                                            </tr>`;
     }
 }
 

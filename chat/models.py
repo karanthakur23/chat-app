@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class UserProfileModel(models.Model):
+class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(blank=True, null=True, max_length=100)
     online_status = models.BooleanField(default=False)
@@ -11,19 +11,41 @@ class UserProfileModel(models.Model):
     def __str__(self):
         return self.user.username
 
-class ChatModel(models.Model):
-    sender = models.CharField(max_length=100, default=None)
-    message = models.TextField(null=True, blank=True)
-    thread_name = models.CharField(null=True, blank=True, max_length=50)
+class ChatRoom(models.Model):
+    roomId = models.CharField(max_length=10, unique=True, blank=True, null=True)
+    member = models.ManyToManyField(User, related_name='chat_rooms')
+
+    def __str__(self):
+        return self.roomId
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self) -> str:
-        return self.message
+    def __str__(self):
+        return f'{self.sender.username} - {self.message[:20]}...' if len(self.message) > 20 else f'{self.sender.username} - {self.message}'
 
-class ChatNotification(models.Model):
-    chat = models.ForeignKey(ChatModel, on_delete=models.CASCADE)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_seen = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
-        return self.user.username
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

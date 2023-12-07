@@ -26,10 +26,12 @@
                             <tr>
                                 <td><img src="{% static 'assets/dp.png' %}" alt="" class="profile-image rounded-circle">
                                 </td>
-                                <td><a href="{% url 'chat' username=user.username %}">{{user.username}}</a></td>
+                                <td><a href="{% url 'chat' receiver_id=user.id %}">{{user.username}}</a></td>
                             </tr>
                             {% endfor %}
-
+                            <tr>
+                                <td><a style="color: green" id="global_chat_id" href="{% url 'global' %}">Global Chats</a></td>
+                            </tr>
                             <!-- end -->
                         </tbody>
                     </table>
