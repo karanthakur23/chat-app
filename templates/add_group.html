@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Group</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            margin: auto;
+        }
+
+        .attractive-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0086b3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 2px solid #0086b3;
+            transition: background-color 0.3s ease;
+        }
+
+        .attractive-button:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        .user-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .user-list-item {
+            margin-bottom: 10px;
+            background-color: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Available Users</h2>
+        <h5>select to group</h5>
+        <form id="group-chat-form">
+            <ul class="user-list">
+                {% for user in users %}
+                    <li class="user-list-item">
+                        <input type="checkbox" name="selected_users[]" value="{{ user.id }}" id="user{{ user.id }}">
+                        <label for="user{{ user.id }}">{{ user.username }}</label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'home' %}"><button type="button" class="attractive-button" id="start-group-chat-btn">Start Group Chat</button></a>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('#start-group-chat-btn').addEventListener('click', function() {
+                var selectedUserIds = [];
+                var checkboxes = document.querySelectorAll('input[name="selected_users[]"]:checked');
+
+                checkboxes.forEach(function(checkbox) {
+                    selectedUserIds.push(checkbox.value);
+                    checkbox.checked = false;
+                });
+
+                console.log('Before sorting:', selectedUserIds);
+                selectedUserIds = selectedUserIds.slice().sort(function(a, b) {
+                    return a - b;
+                });
+                console.log('After sorting:', selectedUserIds);
+
+                console.log('Selected User IDs:', selectedUserIds);
+
+                // Send an AJAX request to the server
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('POST', '/'); // Replace with your actual server endpoint
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        console.log('Group chat started successfully.');
+                    } else {
+                        console.error('Failed to start group chat.');
+                    }
+                };
+
+                var data = 'selectedUserIds=' + encodeURIComponent(selectedUserIds.join(','));
+                xhr.send(data);
+            });
+        });
+
+        // Function to get CSRF token from cookies
+        function getCSRFToken() {
+            var csrfToken = null;
+            document.cookie.split(';').forEach(function(cookie) {
+                var parts = cookie.split('=');
+                if (parts[0].trim() === 'csrftoken') {
+                    csrfToken = parts[1].trim();
+                }
+            });
+            return csrfToken;
+        }
+    </script>
+
+</body>
+</html>

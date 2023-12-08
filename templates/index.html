@@ -8,11 +8,10 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="back-container">
     <div class="container-fluid front-container">
         <div class="back-top" style="text-align: center">
-            <a href="{% url 'accounts:logout' %}" style="color: white">Logout</a>
+            <a href="{% url 'accounts:logout' %}" style="color: rgb(255, 255, 255)">Logout</a>
         </div>
         <div class="back-main"></div>
     </div>
@@ -22,11 +21,12 @@
                 <div class="contact-table-scroll">
                     <table class="table table-hover">
                         <tbody>
+                            <a href="{% url 'add_group' %}"><button id="add-group-btn" class="attractive-button" onclick="">Add Group</button></a>
                             {% for user in users %}
                             <tr>
                                 <td><img src="{% static 'assets/dp.png' %}" alt="" class="profile-image rounded-circle">
                                 </td>
-                                <td><a href="{% url 'chat' receiver_id=user.id %}">{{user.username}}</a></td>
+                                <td><a id="registered-users-list" href="{% url 'chat' receiver_id=user.id %}">{{user.username}}</a></td>
                             </tr>
                             {% endfor %}
                             <tr>

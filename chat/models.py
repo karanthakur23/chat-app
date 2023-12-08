@@ -12,11 +12,18 @@ class UserProfile(models.Model):
         return self.user.username
 
 class ChatRoom(models.Model):
-    roomId = models.CharField(max_length=10, unique=True, blank=True, null=True)
+    ROOM_TYPES = (
+        ('personal', 'Personal'),
+        ('group', 'Group'),
+    )
+
+    roomId = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    room_type = models.CharField(max_length=10, choices=ROOM_TYPES, default='personal')
+    group_name = models.CharField(max_length=50, null=True, blank=True)
     member = models.ManyToManyField(User, related_name='chat_rooms')
 
-    def __str__(self):
-        return self.roomId
+    # def __str__(self):
+    #     return self.roomId
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -25,27 +32,4 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.sender.username} - {self.message[:20]}...' if len(self.message) > 20 else f'{self.sender.username} - {self.message}'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return self.message
