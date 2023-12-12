@@ -26,6 +26,15 @@
 <body>
     {% block content %}{% endblock %}
     {% block javascript %}{% endblock %}
+    <script>
+        function showDialog() {
+            document.getElementById('dialogBox').style.display = 'block';
+        }
+
+        function closeDialog() {
+            document.getElementById('dialogBox').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>

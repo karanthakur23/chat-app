@@ -79,3 +79,11 @@
     background-color: #2980b9;
     border-color: #2980b9;
   }
+
+  .active-group {
+    font-weight: bold;  /* You can customize this style */
+    color: rgb(255, 0, 0);        /* You can customize this color */
+    /* Add any other styles you want for the active group */
+}
+
+

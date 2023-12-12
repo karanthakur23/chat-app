@@ -18,12 +18,15 @@ class ChatRoom(models.Model):
     )
 
     roomId = models.CharField(max_length=100, unique=True, blank=True, null=True)
-    room_type = models.CharField(max_length=10, choices=ROOM_TYPES, default='personal')
+    room_type = models.CharField(max_length=10, choices=ROOM_TYPES, default='personal', null=True, blank=True)
     group_name = models.CharField(max_length=50, null=True, blank=True)
-    member = models.ManyToManyField(User, related_name='chat_rooms')
+    member = models.ManyToManyField(User, related_name='chat_rooms', null=True, blank=True)
 
-    # def __str__(self):
-    #     return self.roomId
+    def __str__(self):
+        if self.room_type == 'group':
+            return self.group_name
+        else:
+            return self.roomId
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -33,3 +36,12 @@ class Message(models.Model):
 
     def __str__(self):
         return self.message
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user} - {self.message}'

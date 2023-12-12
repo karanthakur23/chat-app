@@ -5,6 +5,68 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    .icon-button {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        color: #333333;
+        background: #dddddd;
+        border: none;
+        outline: none;
+        border-radius: 50%;
+        margin-top: 8px;
+        margin-left: 23px;
+    }
+
+    .icon-button:hover {
+        cursor: pointer;
+    }
+
+    .icon-button:active {
+        background: #cccccc;
+    }
+
+    .icon-button__badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        background: red;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+    }
+
+    /* Add styles for the dialog box */
+    .dialog-box {
+        display: none;
+        position: fixed;
+        top: 10%;
+        left: 86%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    /* Add styles for the close button */
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -12,6 +74,15 @@
     <div class="container-fluid front-container">
         <div class="back-top" style="text-align: center">
             <a href="{% url 'accounts:logout' %}" style="color: rgb(255, 255, 255)">Logout</a>
+            <button type="button" class="icon-button" onclick="showDialog()">
+                <span class="material-icons">notifications</span>
+                <span class="icon-button__badge">2</span>
+            </button>
+
+            <div class="dialog-box" id="dialogBox">
+                <span class="close-button" onclick="closeDialog()">X</span>
+                <p>This is your notification content.</p>
+            </div>
         </div>
         <div class="back-main"></div>
     </div>
