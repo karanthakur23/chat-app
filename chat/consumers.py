@@ -4,6 +4,8 @@ from channels.db import database_sync_to_async
 from chat.models import *
 from django.contrib.auth.models import User
 from asgiref.sync import sync_to_async
+import logging
+logger = logging.getLogger(__name__)
 
 
 class PersonalChatConsumer(AsyncWebsocketConsumer):
@@ -121,21 +123,6 @@ class GlobalChatConsumer(AsyncWebsocketConsumer):
         return saved_message_obj
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class GroupChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Get the chat room ID from the URL parameters
@@ -199,3 +186,57 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
         chat_room = ChatRoom.objects.get(roomId=chat_room_id)
         saved_message_obj = Message.objects.create(sender=sender, chat_room=chat_room, message=message)
         return saved_message_obj
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class NotificationConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        my_id = self.scope['user'].id
+        self.room_group_name = f'{my_id}'
+
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def send_notification(self, event):
+        try:
+            data = json.loads(event.get('value'))
+            count = data['count']
+            notifications = data['notifications']
+
+            await self.send(
+                text_data=json.dumps({
+                    'count': count,
+                    'notifications': notifications
+                })
+            )
+
+            logger.info(f"Notification sent: {count} notifications")
+        except Exception as e:
+            logger.error(f"Error sending notification: {str(e)}")

@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(UserProfile)
 admin.site.register(ChatRoom)
 admin.site.register(Message)
+admin.site.register(Notification)

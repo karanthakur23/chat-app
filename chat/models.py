@@ -44,4 +44,4 @@ class Notification(models.Model):
     read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user} - {self.message}'
+        return {self.message}

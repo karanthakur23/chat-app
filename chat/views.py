@@ -59,23 +59,37 @@ def user_chat_list(request):
 @login_required
 def chat_detail(request, receiver_id):
     receiver = get_object_or_404(User, pk=receiver_id)
+
     users = User.objects.exclude(username=request.user.username)
-    chat_rooms = ChatRoom.objects.filter(member=request.user).filter(member=receiver)
+
+    if request.user.id < receiver_id:
+        roomId = f'chat_{request.user.id}_{receiver_id}'
+    else:
+        roomId = f'chat_{receiver_id}_{request.user.id}'
+
+    chat_rooms = ChatRoom.objects.filter(
+        room_type='personal',
+        member=request.user,
+        roomId=roomId
+    )
+
     chat_room_instance = chat_rooms.first()
+
     messages_in_room = Message.objects.filter(chat_room=chat_room_instance)
 
-    try:
-        notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
+    # try:
+    #     notifications = Notification.objects.filter(user=request.user).order_by('-id')[:3]
 
-        Notification.objects.filter(user=request.user, read=False).update(read=True)
+    #     unread_noti = Notification.objects.filter(user=request.user, read=False)
+    #     unread_noti.update(read=True)
 
-        unread_count = notifications.count()
+    #     unread_count = unread_noti.count()
 
-    except Notification.DoesNotExist:
-        notifications = []
-        unread_count = 0
+    # except Notification.DoesNotExist:
+    #     notifications = []
+    #     unread_count = 0
 
-    return render(request, 'main_chat.html', {'notifications': notifications, 'unread_count': unread_count, 'receiver': receiver, 'users': users, 'messages_in_room': messages_in_room})
+    return render(request, 'main_chat.html', {'receiver': receiver, 'users': users, 'messages_in_room': messages_in_room})
 
 @login_required
 def global_chat(request):
