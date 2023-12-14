@@ -20,7 +20,7 @@ class ChatRoom(models.Model):
     roomId = models.CharField(max_length=100, unique=True, blank=True, null=True)
     room_type = models.CharField(max_length=10, choices=ROOM_TYPES, default='personal', null=True, blank=True)
     group_name = models.CharField(max_length=50, null=True, blank=True)
-    member = models.ManyToManyField(User, related_name='chat_rooms', null=True, blank=True)
+    member = models.ManyToManyField(User, related_name='chat_rooms')
 
     def __str__(self):
         if self.room_type == 'group':
@@ -37,11 +37,23 @@ class Message(models.Model):
     def __str__(self):
         return self.message
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'sender': self.sender.username,
+            'chat_room': self.chat_room.id,  # Assuming you have a chat_room field
+            'message': self.message,
+            # Add other fields as needed
+        }
+
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    message = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
 
     def __str__(self):
-        return {self.message}
+        return f'Notification for {self.user.username}'
+
+    def mark_as_read(self):
+        self.read = True
+        self.save()

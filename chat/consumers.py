@@ -9,9 +9,12 @@ logger = logging.getLogger(__name__)
 
 
 class PersonalChatConsumer(AsyncWebsocketConsumer):
+    receiver_global =''
     async def connect(self):
         current_user = self.scope['user'].id
+        self.receiver_global = self.scope['url_route']['kwargs']['id']
         receiver = self.scope['url_route']['kwargs']['id']
+        print("receiver inside connect", receiver)
 
         if current_user > receiver:
             self.room_name = f'{receiver}_{current_user}'
@@ -32,8 +35,9 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         receiver = data['receiver']
+        print("receiver inside receive", receiver)
 
-        await self.save_message(username, self.room_group_name, message)
+        await self.save_message(username, self.room_group_name, message, receiver)
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -59,8 +63,9 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         )
 
     @database_sync_to_async
-    def save_message(self, username, room_group_name, message):
+    def save_message(self, username, room_group_name, message, receiver):
         sender = User.objects.get(username=username)
+        print("sender", sender)
 
         try:
             chat_room = ChatRoom.objects.get(roomId=room_group_name)
@@ -70,6 +75,12 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
 
         chat_room = ChatRoom.objects.get(roomId=room_group_name)
         saved_message_obj = Message.objects.create(sender=sender, chat_room=chat_room, message=message)
+        other_user_id = self.scope['url_route']['kwargs']['id']
+
+        get_user = User.objects.get(id=other_user_id)
+
+        if self.receiver_global == get_user.id:
+            Notification.objects.create(message=saved_message_obj, user=get_user)
 
 
 class GlobalChatConsumer(AsyncWebsocketConsumer):
@@ -230,6 +241,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             count = data['count']
             notifications = data['notifications']
 
+            print(f"WebSocket received notifications: {notifications}")
+
             await self.send(
                 text_data=json.dumps({
                     'count': count,
@@ -240,3 +253,21 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             logger.info(f"Notification sent: {count} notifications")
         except Exception as e:
             logger.error(f"Error sending notification: {str(e)}")
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        action = text_data_json.get('action')
+
+        if action == 'mark_as_read':
+            notification_id = text_data_json.get('notification_id')
+            await self.mark_notification_as_read(notification_id)
+
+    async def mark_notification_as_read(self, notification_id):
+        try:
+            latest_notification = await sync_to_async(Notification.objects.last)()
+            print("LAST_ID:->", latest_notification.id)
+            print("NOTIFICATION_ID:->", notification_id)
+            notification = await sync_to_async(Notification.objects.get)(pk=notification_id)
+            await sync_to_async(notification.mark_as_read)()
+        except Notification.DoesNotExist:
+            print('notification not found')

@@ -41,27 +41,15 @@ def user_chat_list(request):
         print(f"New Chat Room ID: {new_group_chat.id}")
         return redirect('chat', receiver_id=new_group_chat.id)
 
-    try:
-        notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
-
-        for notification in notifications:
-            notification.read = True
-            notification.save()
-        unread_count = notifications.count()
-
-    except Notification.DoesNotExist:
-        notifications = []
-        unread_count = 0
-
-    return render(request, 'index.html', {'users': users, 'notifications': notifications, 'unread_count': unread_count})
+    return render(request, 'index.html', {'users': users})
 
 
 @login_required
 def chat_detail(request, receiver_id):
     receiver = get_object_or_404(User, pk=receiver_id)
-
+    print("receiver user not admin:", receiver)
     users = User.objects.exclude(username=request.user.username)
-
+    print("other user not admin:", users)
     if request.user.id < receiver_id:
         roomId = f'chat_{request.user.id}_{receiver_id}'
     else:

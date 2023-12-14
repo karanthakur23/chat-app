@@ -2,9 +2,8 @@ console.log("chat.js is accessible")
 
 const id = JSON.parse(document.getElementById('json-username').textContent);
 const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
-const receiver = JSON.parse(document.getElementById('json-username-receiver').textContent);
-const receiver1 = JSON.parse(document.getElementById('receiver').textContent);
-console.log(receiver1, ";;;;;;;;;")
+const receiver = JSON.parse(document.getElementById('receiver').textContent);
+console.log(receiver, ";;;;;;;;;")
 console.log(message_username, ";;;;;;;;;")
 console.log(id, ";;;;;;;;;")
 
@@ -12,7 +11,7 @@ const chatSocket = new WebSocket(
     'ws://'
     + window.location.host
     + '/ws/'
-    + receiver1
+    + receiver
     + '/'
 );
 
@@ -52,7 +51,6 @@ document.querySelector('#chat-message-submit').onclick = function(e){
     let message_input = document.querySelector('#message_input');
 
     const message = message_input.value.trim();
-
     chatSocket.send(JSON.stringify({
         'message': message,
         'username': message_username,
@@ -65,6 +63,7 @@ document.querySelector('#chat-message-submit').onclick = function(e){
 const message_input = document.querySelector('#message_input');
 
 message_input.addEventListener('keyup', function(event) {
+
     if (event.key === 'Enter') {
 
        event.preventDefault();
