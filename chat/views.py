@@ -65,18 +65,6 @@ def chat_detail(request, receiver_id):
 
     messages_in_room = Message.objects.filter(chat_room=chat_room_instance)
 
-    # try:
-    #     notifications = Notification.objects.filter(user=request.user).order_by('-id')[:3]
-
-    #     unread_noti = Notification.objects.filter(user=request.user, read=False)
-    #     unread_noti.update(read=True)
-
-    #     unread_count = unread_noti.count()
-
-    # except Notification.DoesNotExist:
-    #     notifications = []
-    #     unread_count = 0
-
     return render(request, 'main_chat.html', {'receiver': receiver, 'users': users, 'messages_in_room': messages_in_room})
 
 @login_required

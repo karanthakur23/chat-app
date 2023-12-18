@@ -80,7 +80,7 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         get_user = User.objects.get(id=other_user_id)
 
         if self.receiver_global == get_user.id:
-            Notification.objects.create(message=saved_message_obj, user=get_user)
+            Notification.objects.create(message=saved_message_obj, user=sender)
 
 
 class GlobalChatConsumer(AsyncWebsocketConsumer):
@@ -259,6 +259,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         action = text_data_json.get('action')
 
         if action == 'mark_as_read':
+            print("mark as read if runned")
             notification_id = text_data_json.get('notification_id')
             await self.mark_notification_as_read(notification_id)
 

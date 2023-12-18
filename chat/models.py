@@ -37,22 +37,21 @@ class Message(models.Model):
     def __str__(self):
         return self.message
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'sender': self.sender.username,
-            'chat_room': self.chat_room.id,  # Assuming you have a chat_room field
-            'message': self.message,
-            # Add other fields as needed
-        }
-
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Notification for {self.user.username}'
+        return 'Notification created'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user': self.user.username,
+            'message': self.message.message,
+            'read': self.read
+        }
 
     def mark_as_read(self):
         self.read = True

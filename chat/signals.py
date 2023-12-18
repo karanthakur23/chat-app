@@ -16,16 +16,16 @@ def create_notification(sender, instance, **kwargs):
 
         channel_layer = get_channel_layer()
 
-        notification = Notification.objects.filter(read=False, user__username=instance.user).order_by('-id')
-        print ("notification : ", notification)
+        notifications = Notification.objects.filter(read=False, user__username=instance.user).order_by('-id')
+        print ("notification : ", notifications)
 
-        notification_list = [noti.message.to_dict() for noti in notification]
+        notification_list = [noti.to_dict() for noti in notifications]
         print("Notification list:", notification_list)
 
         user_id = str(instance.user.id)
 
         data = {
-            'count': notification.count(),
+            'count': len(notifications),
             'notifications': notification_list
         }
 

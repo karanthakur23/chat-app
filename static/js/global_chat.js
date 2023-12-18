@@ -4,9 +4,7 @@ const id = JSON.parse(document.getElementById('json-username').textContent);
 const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
 const receiver = JSON.parse(document.getElementById('json-username-receiver').textContent);
 const receiver1 = JSON.parse(document.getElementById('receiver').textContent);
-console.log(receiver1, ";;;;;;;;;")
-console.log(message_username, ";;;;;;;;;")
-console.log(id, ";;;;;;;;;")
+
 
 const chatSocket = new WebSocket(
     'ws://'
